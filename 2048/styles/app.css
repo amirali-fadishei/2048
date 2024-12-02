@@ -16,20 +16,11 @@ body {
   }
 }
 
-#game-board {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.board {
   background-color: #bbada0;
   border-radius: 10px;
   width: fit-content;
   padding: 20px 30px;
-}
-
-.row {
-  display: flex;
-  flex-direction: row;
 }
 
 .tile {
