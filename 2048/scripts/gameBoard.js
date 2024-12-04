@@ -52,7 +52,7 @@ class GameBoard {
           if (target.value === node.value) {
             target.value *= 2;
             this.score += target.value;
-            this.board.remove(node.row, node.row);
+            this.board.remove(node.row, node.column);
             break;
           } else {
             break;
@@ -126,8 +126,8 @@ class GameBoard {
     let current2 = savedBoard.head;
     while (current1 && current2) {
       if (
-        current1.row !== current2.column ||
-        current1.row !== current2.column ||
+        current1.row !== current2.row ||
+        current1.column !== current2.column ||
         current1.value !== current2.value
       ) {
         return false;
@@ -138,13 +138,13 @@ class GameBoard {
     return true;
   }
   hasWon() {
-    let found2048 = false;
+    let found = false;
     this.board.traverse((node) => {
       if (node.value === 2048) {
-        found2048 = true;
+        found = true;
       }
     });
-    return found2048;
+    return found;
   }
   isGameOver() {
     if (this.getEmptyCells().length > 0) {
@@ -153,10 +153,10 @@ class GameBoard {
     let gameOver = true;
     this.board.traverse((node) => {
       const neighbors = [
-        this.board.find(node.i - 1, node.j),
-        this.board.find(node.i + 1, node.j),
-        this.board.find(node.i, node.j - 1),
-        this.board.find(node.i, node.j + 1),
+        this.board.find(node.row - 1, node.column),
+        this.board.find(node.row + 1, node.column),
+        this.board.find(node.row, node.column - 1),
+        this.board.find(node.row, node.column + 1),
       ];
       if (
         neighbors.some((neighbor) => neighbor && neighbor.value === node.value)

@@ -20,7 +20,7 @@ class LinkedList {
     let current = this.head;
     let previous = null;
     while (current) {
-      if (current.i === i && current.j === j) {
+      if (current.row === i && current.column === j) {
         if (previous) {
           previous.next = current.next;
         } else {

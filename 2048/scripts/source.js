@@ -62,7 +62,6 @@ function checkGameState() {
   if (game.hasWon() && !gameWon) {
     gameWon = true;
     alert("Congratulations! You reached 2048!");
-    if (!confirm("Do you want to continue playing?")) return;
   }
   if (game.isGameOver()) {
     alert("Game Over! No more moves left.");
