@@ -4,7 +4,6 @@ class Stack {
   constructor() {
     this.limit = 5;
     this.stack = new LinkedList();
-    this.length = 0;
   }
 
   push(board, score) {
@@ -18,19 +17,19 @@ class Stack {
       newNode.next = this.stack.head;
       this.stack.head = newNode;
     }
-    this.length++;
+    this.stack.length++;
   }
   pop() {
-    if (this.length === 0) {
+    if (this.stack.length === 0) {
       return null;
     }
     const topNode = this.stack.head;
     this.stack.head = this.stack.head.next;
-    this.length--;
+    this.stack.length--;
     return topNode;
   }
   isEmpty() {
-    return this.length === 0;
+    return this.stack.length === 0;
   }
 }
 export default Stack;

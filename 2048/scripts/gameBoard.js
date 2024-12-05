@@ -144,10 +144,6 @@ class GameBoard {
     this.redoStack.push(saved, this.score);
   }
   undo() {
-    if (this.undoStack.isEmpty()) {
-      alert("No more undos available!");
-      return;
-    }
     let prev = this.undoStack.pop();
     let previousBoard = prev.value.board;
     let score = prev.value.score;
@@ -156,10 +152,6 @@ class GameBoard {
     this.restoreBoard(previousBoard, score);
   }
   redo() {
-    if (this.redoStack.isEmpty()) {
-      alert("No more redos available!");
-      return;
-    }
     let next = this.redoStack.pop();
     let nextBoard = next.value.board;
     let score = next.value.score;

@@ -11,18 +11,26 @@ document.addEventListener("keydown", handleKeyPress);
 const undoButton = document.getElementById("undo-button");
 const redoButton = document.getElementById("redo-button");
 undoButton.addEventListener("click", () => {
-  game.undo();
-  game.undoStack.limit--;
-  renderBoard(game.board);
-  updateScore(game.score);
-  updateUndoRedoBtns();
+  if (game.undoStack.isEmpty()) {
+    showAlert("You Can Not Undo !");
+  } else {
+    game.undo();
+    game.undoStack.limit--;
+    renderBoard(game.board);
+    updateScore(game.score);
+    updateUndoRedoBtns();
+  }
 });
 redoButton.addEventListener("click", () => {
-  game.redo();
-  game.redoStack.limit--;
-  renderBoard(game.board);
-  updateScore(game.score);
-  updateUndoRedoBtns();
+  if (game.redoStack.isEmpty()) {
+    showAlert("You Can Not Redo !");
+  } else {
+    game.redo();
+    game.redoStack.limit--;
+    renderBoard(game.board);
+    updateScore(game.score);
+    updateUndoRedoBtns();
+  }
 });
 
 function renderBoard(board) {
