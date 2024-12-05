@@ -11,14 +11,19 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="styles/app.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="container text-center">
-      <div class="row justify-content-center align-items-center mt-5">
-        <div id="controls" class="d-flex justify-content-around w-25 px-5">
-          <button id="undo-button" class="btn btn-danger">Undo</button>
-          <button id="redo-button" class="btn btn-warning">Redo</button>
-        </div>
+      <div
+        id="alertBox"
+        class="alert alert-primary mt-3 w-50 mx-auto"
+        role="alert"
+      >
+        Logs:
       </div>
       <div class="row justify-content-between align-items-center mt-5">
         <div class="desc col-3">
@@ -32,6 +37,16 @@
         <div class="desc col-3">
           <h1 class="text-primary">Your Score</h1>
           <h4 class="text-bg-info" id="score">0</h4>
+        </div>
+      </div>
+      <div class="row justify-content-center align-items-center mt-3">
+        <div id="controls" class="d-flex justify-content-between w-50 px-5">
+          <button id="undo-button" class="w-25 btn btn-danger ms-5">
+            Undo
+          </button>
+          <button id="redo-button" class="w-25 btn btn-warning me-5">
+            Redo
+          </button>
         </div>
       </div>
     </div>

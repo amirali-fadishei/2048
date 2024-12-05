@@ -2,15 +2,18 @@ body {
   background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
+  font-family: "Roboto", sans-serif;
 }
 
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -35,6 +38,7 @@ body {
   border-radius: 15px;
   margin: 5px;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  font-family: "Bebas Neue", sans-serif;
 }
 
 .cell-2 {
@@ -44,22 +48,27 @@ body {
 .cell-4 {
   background-color: #ede0c8;
 }
+
 .cell-8 {
   background-color: #f2b179;
   color: #f9f6f2;
 }
+
 .cell-16 {
   background-color: #f59563;
   color: #f9f6f2;
 }
+
 .cell-32 {
   background-color: #f67c5f;
   color: #f9f6f2;
 }
+
 .cell-64 {
   background-color: #f65e3b;
   color: #f9f6f2;
 }
+
 .cell-128 {
   background-color: #edcf72;
   color: #f9f6f2;

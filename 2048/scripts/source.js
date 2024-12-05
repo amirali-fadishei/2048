@@ -40,6 +40,7 @@ function renderBoard(board) {
     gameBoardElement.appendChild(rowElement);
   }
 }
+
 function createCell(value) {
   const cell = document.createElement("div");
   cell.classList.add("cell");
@@ -53,9 +54,10 @@ function createCell(value) {
   }
   return cell;
 }
+
 function handleKeyPress(event) {
   if (game.isGameOver()) {
-    alert("Game Over! No more moves left.");
+    showAlert("Game Over !");
     return;
   }
   const boardBeforeMove = game.saveCurrentBoard();
@@ -80,7 +82,7 @@ function handleKeyPress(event) {
   }
 
   if (game.boardsAreEqual(boardBeforeMove)) {
-    alert("Invalid Move: No Changing");
+    showAlert("Invalid Move !");
     return;
   } else {
     game.addRandomCell();
@@ -89,19 +91,22 @@ function handleKeyPress(event) {
     checkGameState();
   }
 }
+
 function checkGameState() {
   if (game.hasWon() && !gameWon) {
     gameWon = true;
-    alert("Congratulations! You reached 2048!");
+    showAlert("You Won !");
   }
   if (game.isGameOver()) {
-    alert("Game Over! No more moves left.");
+    showAlert("Game Over !");
   }
 }
+
 function updateScore(score) {
   const scoreElement = document.getElementById("score");
   scoreElement.textContent = score;
 }
+
 function updateUndoRedoBtns() {
   if (game.undoStack.limit == 0) {
     undoButton.disabled = true;
@@ -109,4 +114,12 @@ function updateUndoRedoBtns() {
   if (game.redoStack.limit == 0) {
     redoButton.disabled = true;
   }
+}
+
+function showAlert(message) {
+  const alertBox = document.getElementById("alertBox");
+  alertBox.textContent = message;
+  setTimeout(() => {
+    alertBox.textContent = "Logs:";
+  }, 2000);
 }

@@ -46,7 +46,6 @@ class GameBoard {
         }
       }
     });
-    this.redoStack = new Stack();
   }
   moveDown() {
     this.pushToUndo();
@@ -67,7 +66,6 @@ class GameBoard {
         }
       }
     });
-    this.redoStack = new Stack();
   }
   moveLeft() {
     this.pushToUndo();
@@ -88,7 +86,6 @@ class GameBoard {
         }
       }
     });
-    this.redoStack = new Stack();
   }
   moveRight() {
     this.pushToUndo();
@@ -109,7 +106,6 @@ class GameBoard {
         }
       }
     });
-    this.redoStack = new Stack();
   }
 
   getEmptyCells() {
@@ -131,36 +127,45 @@ class GameBoard {
     );
     return savedBoard;
   }
-  restoreBoard(savedBoard) {
+  restoreBoard(savedBoard, score) {
     this.board = new LinkedList();
     savedBoard.traverse((node) =>
       this.board.add(node.row, node.column, node.value)
     );
+    this.score = score;
   }
 
   pushToUndo() {
-    this.undoStack.push(this.saveCurrentBoard());
+    const saved = this.saveCurrentBoard();
+    this.undoStack.push(saved, this.score);
   }
   pushToRedo() {
-    this.redoStack.push(this.saveCurrentBoard());
+    const saved = this.saveCurrentBoard();
+    this.redoStack.push(saved, this.score);
   }
   undo() {
     if (this.undoStack.isEmpty()) {
       alert("No more undos available!");
       return;
     }
-    const previousBoard = this.undoStack.pop();
-    this.redoStack.push(this.saveCurrentBoard());
-    this.restoreBoard(previousBoard);
+    let prev = this.undoStack.pop();
+    let previousBoard = prev.value.board;
+    let score = prev.value.score;
+    let saved = this.saveCurrentBoard();
+    this.redoStack.push(saved, this.score);
+    this.restoreBoard(previousBoard, score);
   }
   redo() {
     if (this.redoStack.isEmpty()) {
       alert("No more redos available!");
       return;
     }
-    const nextBoard = this.redoStack.pop();
-    this.undoStack.push(this.saveCurrentBoard());
-    this.restoreBoard(nextBoard);
+    let next = this.redoStack.pop();
+    let nextBoard = next.value.board;
+    let score = next.value.score;
+    let saved = this.saveCurrentBoard();
+    this.undoStack.push(saved, this.score);
+    this.restoreBoard(nextBoard, score);
   }
 
   boardsAreEqual(savedBoard) {
