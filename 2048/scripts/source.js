@@ -1,9 +1,30 @@
 import GameBoard from "./gameBoard.js";
+
 const game = new GameBoard();
 let gameWon = false;
-game.initializeBoard();
+
+game.initialize();
 renderBoard(game.board);
 updateScore(game.score);
+
+document.addEventListener("keydown", handleKeyPress);
+const undoButton = document.getElementById("undo-button");
+const redoButton = document.getElementById("redo-button");
+undoButton.addEventListener("click", () => {
+  game.undo();
+  game.undoStack.limit--;
+  renderBoard(game.board);
+  updateScore(game.score);
+  updateUndoRedoBtns();
+});
+redoButton.addEventListener("click", () => {
+  game.redo();
+  game.redoStack.limit--;
+  renderBoard(game.board);
+  updateScore(game.score);
+  updateUndoRedoBtns();
+});
+
 function renderBoard(board) {
   const gameBoardElement = document.querySelector("#game-board");
   gameBoardElement.innerHTML = "";
@@ -13,46 +34,56 @@ function renderBoard(board) {
     for (let j = 0; j < 4; j++) {
       const node = board.find(i, j);
       const value = node ? node.value : null;
-      const tile = createTile(value);
-      rowElement.appendChild(tile);
+      const cell = createCell(value);
+      rowElement.appendChild(cell);
     }
     gameBoardElement.appendChild(rowElement);
   }
 }
-function createTile(value) {
-  const tile = document.createElement("div");
-  tile.classList.add("tile");
+function createCell(value) {
+  const cell = document.createElement("div");
+  cell.classList.add("cell");
   if (value !== null) {
-    tile.textContent = value;
-    if (value > 16) {
-      tile.classList.add("tile-default");
+    cell.textContent = value;
+    if (value > 128) {
+      cell.classList.add("cell-default");
     } else {
-      tile.classList.add(`tile-${value}`);
+      cell.classList.add(`cell-${value}`);
     }
   }
-  return tile;
+  return cell;
 }
-document.addEventListener("keydown", handleKeyPress);
 function handleKeyPress(event) {
   if (game.isGameOver()) {
     alert("Game Over! No more moves left.");
     return;
   }
-  const directionMap = {
-    ArrowUp: "Up",
-    ArrowDown: "Down",
-    ArrowLeft: "Left",
-    ArrowRight: "Right",
-  };
-  const direction = directionMap[event.key];
-  if (!direction) return;
   const boardBeforeMove = game.saveCurrentBoard();
-  game[`move${direction}`]();
+
+  const key = event.key;
+
+  switch (key) {
+    case "ArrowUp":
+      game.moveUp();
+      break;
+    case "ArrowDown":
+      game.moveDown();
+      break;
+    case "ArrowLeft":
+      game.moveLeft();
+      break;
+    case "ArrowRight":
+      game.moveRight();
+      break;
+    default:
+      return;
+  }
+
   if (game.boardsAreEqual(boardBeforeMove)) {
-    alert("Invalid move: No changes made to the board.");
+    alert("Invalid Move: No Changing");
     return;
   } else {
-    game.addRandomTile();
+    game.addRandomCell();
     renderBoard(game.board);
     updateScore(game.score);
     checkGameState();
@@ -70,4 +101,12 @@ function checkGameState() {
 function updateScore(score) {
   const scoreElement = document.getElementById("score");
   scoreElement.textContent = score;
+}
+function updateUndoRedoBtns() {
+  if (game.undoStack.limit == 0) {
+    undoButton.disabled = true;
+  }
+  if (game.redoStack.limit == 0) {
+    redoButton.disabled = true;
+  }
 }

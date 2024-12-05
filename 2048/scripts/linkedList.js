@@ -5,53 +5,60 @@ class LinkedList {
     this.tail = null;
     this.length = 0;
   }
+
   add(i, j, value) {
     const newNode = new Node(i, j, value);
+
     if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
+      this.head = this.tail = newNode;
     } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+      this.tail = this.tail.next = newNode;
     }
+
     this.length++;
   }
+
   remove(i, j) {
-    let current = this.head;
-    let previous = null;
-    while (current) {
-      if (current.row === i && current.column === j) {
-        if (previous) {
-          previous.next = current.next;
+    let nextPointer = this.head;
+    let lastPointer = null;
+
+    while (nextPointer) {
+      if (nextPointer.row === i && nextPointer.column === j) {
+        if (lastPointer) {
+          lastPointer.next = nextPointer.next;
         } else {
-          this.head = current.next;
+          this.head = nextPointer.next;
         }
-        if (current === this.tail) {
-          this.tail = previous;
+        if (nextPointer === this.tail) {
+          this.tail = lastPointer;
         }
         this.length--;
         return true;
       }
-      previous = current;
-      current = current.next;
+      lastPointer = nextPointer;
+      nextPointer = nextPointer.next;
     }
+
     return false;
   }
+
   find(i, j) {
-    let current = this.head;
-    while (current) {
-      if (current.row === i && current.column === j) {
-        return current;
-      }
-      current = current.next;
+    let nextPointer = this.head;
+
+    while (nextPointer) {
+      if (nextPointer.row === i && nextPointer.column === j) return nextPointer;
+      nextPointer = nextPointer.next;
     }
+
     return null;
   }
+
   traverse(callback) {
-    let current = this.head;
-    while (current) {
-      callback(current);
-      current = current.next;
+    let nextPointer = this.head;
+
+    while (nextPointer) {
+      callback(nextPointer);
+      nextPointer = nextPointer.next;
     }
   }
 }

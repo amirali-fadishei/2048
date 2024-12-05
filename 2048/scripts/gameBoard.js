@@ -1,31 +1,34 @@
 import LinkedList from "./linkedList.js";
+import Stack from "./stack.js";
+
 class GameBoard {
   constructor() {
     this.board = new LinkedList();
+    this.undoStack = new Stack();
+    this.redoStack = new Stack();
     this.score = 0;
   }
-  initializeBoard() {
-    this.addRandomTile();
-    this.addRandomTile();
+
+  initialize() {
+    this.addRandomCell();
+    this.addRandomCell();
   }
-  addRandomTile() {
+  addRandomCell() {
     const emptyCells = this.getEmptyCells();
-    if (emptyCells.length === 0) return;
+    if (!emptyCells.head) return;
     const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    let current = emptyCells.head;
-    let currentIndex = 0;
-    while (currentIndex < randomIndex && current) {
-      current = current.next;
-      currentIndex++;
+    let nextPointer = emptyCells.head;
+    for (let i = 0; i < randomIndex && nextPointer; i++) {
+      nextPointer = nextPointer.next;
     }
-    if (current) {
-      let i = current.row;
-      let j = current.column;
-      const value = Math.random() < 0.7 ? 2 : 4;
-      this.board.add(i, j, value);
+    if (nextPointer) {
+      const { row, column } = nextPointer;
+      this.board.add(row, column, Math.random() < 0.7 ? 2 : 4);
     }
   }
+
   moveUp() {
+    this.pushToUndo();
     this.board.traverse((node) => {
       while (node.row > 0) {
         const target = this.board.find(node.row - 1, node.column);
@@ -43,8 +46,10 @@ class GameBoard {
         }
       }
     });
+    this.redoStack = new Stack();
   }
   moveDown() {
+    this.pushToUndo();
     this.board.traverse((node) => {
       while (node.row < 3) {
         const target = this.board.find(node.row + 1, node.column);
@@ -62,8 +67,10 @@ class GameBoard {
         }
       }
     });
+    this.redoStack = new Stack();
   }
   moveLeft() {
+    this.pushToUndo();
     this.board.traverse((node) => {
       while (node.column > 0) {
         const target = this.board.find(node.row, node.column - 1);
@@ -81,8 +88,10 @@ class GameBoard {
         }
       }
     });
+    this.redoStack = new Stack();
   }
   moveRight() {
+    this.pushToUndo();
     this.board.traverse((node) => {
       while (node.column < 3) {
         const target = this.board.find(node.row, node.column + 1);
@@ -100,7 +109,9 @@ class GameBoard {
         }
       }
     });
+    this.redoStack = new Stack();
   }
+
   getEmptyCells() {
     const emptyCells = new LinkedList();
     for (let i = 0; i < 4; i++) {
@@ -115,11 +126,43 @@ class GameBoard {
   }
   saveCurrentBoard() {
     const savedBoard = new LinkedList();
-    this.board.traverse((node) => {
-      savedBoard.add(node.row, node.column, node.value);
-    });
+    this.board.traverse((node) =>
+      savedBoard.add(node.row, node.column, node.value)
+    );
     return savedBoard;
   }
+  restoreBoard(savedBoard) {
+    this.board = new LinkedList();
+    savedBoard.traverse((node) =>
+      this.board.add(node.row, node.column, node.value)
+    );
+  }
+
+  pushToUndo() {
+    this.undoStack.push(this.saveCurrentBoard());
+  }
+  pushToRedo() {
+    this.redoStack.push(this.saveCurrentBoard());
+  }
+  undo() {
+    if (this.undoStack.isEmpty()) {
+      alert("No more undos available!");
+      return;
+    }
+    const previousBoard = this.undoStack.pop();
+    this.redoStack.push(this.saveCurrentBoard());
+    this.restoreBoard(previousBoard);
+  }
+  redo() {
+    if (this.redoStack.isEmpty()) {
+      alert("No more redos available!");
+      return;
+    }
+    const nextBoard = this.redoStack.pop();
+    this.undoStack.push(this.saveCurrentBoard());
+    this.restoreBoard(nextBoard);
+  }
+
   boardsAreEqual(savedBoard) {
     if (this.board.length !== savedBoard.length) return false;
     let current1 = this.board.head;
@@ -150,20 +193,31 @@ class GameBoard {
     if (this.getEmptyCells().length > 0) {
       return false;
     }
+
     let gameOver = true;
+
     this.board.traverse((node) => {
-      const neighbors = [
-        this.board.find(node.row - 1, node.column),
-        this.board.find(node.row + 1, node.column),
-        this.board.find(node.row, node.column - 1),
-        this.board.find(node.row, node.column + 1),
-      ];
-      if (
-        neighbors.some((neighbor) => neighbor && neighbor.value === node.value)
-      ) {
+      const topNeighbor = this.board.find(node.row - 1, node.column);
+      if (topNeighbor && topNeighbor.value === node.value) {
+        gameOver = false;
+      }
+
+      const bottomNeighbor = this.board.find(node.row + 1, node.column);
+      if (bottomNeighbor && bottomNeighbor.value === node.value) {
+        gameOver = false;
+      }
+
+      const leftNeighbor = this.board.find(node.row, node.column - 1);
+      if (leftNeighbor && leftNeighbor.value === node.value) {
+        gameOver = false;
+      }
+
+      const rightNeighbor = this.board.find(node.row, node.column + 1);
+      if (rightNeighbor && rightNeighbor.value === node.value) {
         gameOver = false;
       }
     });
+
     return gameOver;
   }
 }
